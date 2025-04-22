@@ -62,8 +62,8 @@ export class UserController {
 
   
   @Patch(':id/promote')
-  // @UseGuards(JwtAuthGuard)
-  // @Roles(userRole.ADMIN) // Only allow admin to promote others
+  @UseGuards(JwtAuthGuard)
+  @Roles(userRole.ADMIN) // Only allow admin to promote others
   async makeadmin(@Param('id') id: string) {
     return this.userService.promoteToAdmin(id);
   }

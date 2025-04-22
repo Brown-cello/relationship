@@ -5,7 +5,7 @@ import { ForbiddenRoleException } from "../exception/role.exception";
 import { userRole } from "src/user/enum/user.role.enum";
 
 
-@Injectable()
+
 //role.guard.ts file
 
 @Injectable()
