@@ -9,10 +9,10 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import * as bcrypt from 'bcrypt';
 import { createUserProfileDto } from './dto/createUserProfile.dto';
-import { profile } from './entities/profile';
+import { profile } from './entities/profile.entity';
 import { createUserPostDto } from './dto/createUserPost.dto';
-import { post } from './entities/post';
-import { Roles } from 'src/auth/guard/role';
+import { post } from './entities/post.entity';
+import { Roles } from '../auth/guard/role';
 import { userRole } from './enum/user.role.enum';
 import { LoginDto } from './dto/login.dto';
 import { Request,Response } from 'express';
@@ -27,7 +27,7 @@ export class UserService {
   private jwtService: JwtService) { }
    async create(payload: CreateUserDto) {
    payload.email = payload.email.toLowerCase()
-   const { email, password, ...rest } = payload;
+   const { email, password, firstName,lastName,...rest } = payload;
    const user = await this.userRepo.findOne({ where: { email: email } });
    if (user) {
     throw new HttpException('sorry user with this email already exist', 400)
@@ -36,7 +36,7 @@ export class UserService {
   
    const userDetails = await this.userRepo.save({
     email,
-    password: hashPassword,
+    password: hashPassword,firstName,lastName,
     ...rest
    })
    
@@ -170,7 +170,7 @@ export class UserService {
       throw new HttpException('User not found', 404);
     }
 
-    user.role = userRole.ADMIN;
+    user.role = userRole.USER;
     return this.userRepo.save(user);
   }
 
