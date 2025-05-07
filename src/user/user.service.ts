@@ -126,7 +126,7 @@ export class UserService {
 }
 
   
-async remove(id: number): Promise<{ message: string }> {
+async remove(id: string): Promise<{ message: string }> {
   const result = await this.userRepo.delete(id);
 
   if (result.affected === 0) {
