@@ -11,6 +11,7 @@ import { JwtAuthGuard } from '../auth/JWT AuthGuard/jwt-auth.guard';
 import { userRole } from './enum/user.role.enum';
 import { LoginDto } from './dto/login.dto';
 import {  Response } from 'express';
+import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -32,21 +33,19 @@ export class UserController {
    findAll() {
    return this.userService.findAll();
    }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
+   @Get(':id')
+   async getById(@Param('id') id: string): Promise<User> {
+     return this.userService.findOneById(id);
+   }
+    @Patch(':id')
+   async update(@Param('id') id: number, @Body() updateData: Partial<User>) {
+     return  await this.userService.update(id, updateData);
+   }
+ 
+   @Delete(':id')
+   async delete(@Param('id') id:number) {
+     return this.userService.remove(id);
+   }
   @Post(':id/profile')
   createUserProfile(@Param('id') id:string,@Body() createUserProfileDto: createUserProfileDto) {
     return this.userService.createUserProfile(id,createUserProfileDto)

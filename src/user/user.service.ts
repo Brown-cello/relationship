@@ -1,4 +1,4 @@
-import { HttpException, Injectable, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException, Req, Res, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -99,18 +99,49 @@ export class UserService {
   async findAll() {
    return await this.userRepo.find()
   }
+  async findOneById(id: string, ): Promise<User> {
+    const user = await this.userRepo.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException(`data record with ID ${id} not found`);
+    }
+    return user;
+  }
+
+  async update(id, updatedata: Partial<User>) {
+    const updateuser = await this.userRepo.findOne({ where: { id } });
+
+    if (!updateuser) {
+      throw new NotFoundException(`Library record with ID ${id} not found`);
+    }
+
+    const newupdateuser= await this.userRepo.update(id,updateuser);
+    const updated = await this.userRepo.findOne({ where: { id } })
+    
+
+    return{
+      statuscode:200,
+      message:'link succesfully updated',
+      data:updated
+    }
+}
+
   
-  findOne(id: number) {
-   return `This action returns a #${id} user`;
-   }
+async remove(id: number): Promise<{ message: string }> {
+  const result = await this.userRepo.delete(id);
+
+  if (result.affected === 0) {
+    throw new NotFoundException(`Library record with ID ${id} not found`);
   
-   update(id: number, updateUserDto: UpdateUserDto) {
-  return `This action updates a #${id} user`;
-   }
+  }
+
+  const newresult= await this.userRepo.delete(id)
   
-   remove(id: number) {
-   return `This action removes a #${id} user`;
-   }
+
+  return { message: `USER with ID ${id} deleted successfully`,
+
+
+};
+} 
    async verifyPassword(hashedPassword: string, plainPassword: string,): Promise<boolean> {
    try {
    return await argon2.verify(hashedPassword, plainPassword);
