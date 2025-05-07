@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res, } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Res, ParseIntPipe, } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -38,7 +38,7 @@ export class UserController {
      return this.userService.findOneById(id);
    }
     @Patch(':id')
-   async update(@Param('id') id: number, @Body() updateData: Partial<User>) {
+   async update(@Param('id',ParseIntPipe) id: number, @Body() updateData: Partial<User>) {
      return  await this.userService.update(id, updateData);
    }
  
