@@ -38,7 +38,7 @@ export class UserController {
      return this.userService.findOneById(id);
    }
     @Patch(':id')
-   async update(@Param('id',ParseIntPipe) id: number, @Body() updateData: Partial<User>) {
+   async update(@Param('id',) id: string, @Body() updateData: Partial<User>) {
      return  await this.userService.update(id, updateData);
    }
  
