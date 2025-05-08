@@ -201,7 +201,7 @@ async remove(id: string): Promise<{ message: string }> {
       throw new HttpException('User not found', 404);
     }
 
-    user.role = userRole.USER;
+    user.role = userRole.ADMIN; // Assuming you have a userRole enum defined somewhere
     return this.userRepo.save(user);
   }
 
