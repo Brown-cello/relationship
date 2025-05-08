@@ -205,4 +205,18 @@ async remove(id: string): Promise<{ message: string }> {
     return this.userRepo.save(user);
   }
 
+  async DemoteAdmin(id: string) {
+
+    const user = await this.userRepo.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    // Set the role to USER
+    user.role = userRole.USER;
+    // Save the updated user
+    const updatedUser = await this.userRepo.save(user);
+    // Return only specific fields as Partial<User>
+    return { id: updatedUser.id, email: updatedUser.email, role: updatedUser.role };
+  }
+
 }

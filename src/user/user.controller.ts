@@ -29,7 +29,7 @@ export class UserController {
   }
   @Get()
   @UseGuards(AuthGuard(),RolesGuard)
-   @Roles('admin')
+   @Roles('admin', 'superadmin') // Only allow admin and superadmin to access this route
    findAll() {
    return this.userService.findAll();
    }
@@ -59,12 +59,17 @@ export class UserController {
   
   }
 
+  @Patch(':id/demote')
+  @UseGuards(AuthGuard())
+  @Roles(userRole.SUPERADMIN) // Only allow superadmin to demote others
+  async DemoteAdmin(@Param('id') id: string) {
+    return this.userService.DemoteAdmin(id);
+  }
   
   @Patch(':id/promote')
   @UseGuards(JwtAuthGuard)
-  @Roles(userRole.ADMIN) // Only allow admin to promote others
+  @Roles(userRole.ADMIN, userRole.SUPERADMIN) // Only allow admin to promote others
   async makeadmin(@Param('id') id: string) {
     return this.userService.promoteToAdmin(id);
   }
-
 }
